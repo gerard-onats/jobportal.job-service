@@ -3,6 +3,7 @@ package com.jobportal.jobservice.model;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @Table(name="job_posts", schema = "job")
@@ -26,6 +27,9 @@ public class JobMatch {
 
     @Column(name="date_added")
     private Date dateAdded;
+
+    @OneToMany(mappedBy = "jobMatch")
+    private List<Question> questions;
 
     public Long getId() {
         return id;

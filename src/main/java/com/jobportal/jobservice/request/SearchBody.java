@@ -9,9 +9,9 @@ public class SearchBody {
     private String jobType;
     private String datePosted;
     private String preference;
-    private String experienceLevel;
+    private Experience experienceLevel;
     @NonNull
-    private boolean isNewSearch;
+    private boolean newSearch;
     @NonNull
     private Long pageNumber;
 
@@ -58,20 +58,20 @@ public class SearchBody {
         this.preference = preference;
     }
 
-    public String getExperienceLevel() {
+    public Experience getExperienceLevel() {
         return experienceLevel;
     }
 
-    public void setExperienceLevel(String experienceLevel) {
+    public void setExperienceLevel(Experience experienceLevel) {
         this.experienceLevel = experienceLevel;
     }
 
     public boolean isNewSearch() {
-        return isNewSearch;
+        return newSearch;
     }
 
     public void setNewSearch(boolean newSearch) {
-        isNewSearch = newSearch;
+        this.newSearch = newSearch;
     }
 
     @NonNull
@@ -82,4 +82,11 @@ public class SearchBody {
     public void setPageNumber(@NonNull Long pageNumber) {
         this.pageNumber = pageNumber;
     }
+}
+
+enum Experience {
+    INTERNSHIP,
+    JUNIOR,
+    SENIOR,
+    PRINCIPAL;
 }

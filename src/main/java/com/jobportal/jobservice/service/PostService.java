@@ -57,8 +57,7 @@ public class PostService {
         for(JobMatch match : query) {
             JobMatchDTO matchDTO = new JobMatchDTO();
 
-            String companyName = match.getCompany().getCompanyName();
-            matchDTO.setCompany(companyName);
+            matchDTO.setCompany(match.getCompany().getCompanyName());
             matchDTO.setDescription(match.getJobDescription());
             matchDTO.setTitle(match.getJobTitle());
             matchDTO.setCompanyDescription(match.getCompany().getCompanyDescription());
@@ -66,8 +65,7 @@ public class PostService {
             String logo = match.getCompany().getLogo();
             if(exists.containsKey(logo)) matchDTO.setBase64Image(exists.get(logo));
             else {
-                String base64 = s3Service.getObjectBase64(logo);
-                String base64Image = FormatterUtils.base64LogoFormatter(logo, base64);
+                String base64Image = FormatterUtils.base64LogoFormatter(logo, s3Service.getObjectBase64(logo));
                 matchDTO.setBase64Image(base64Image);
                 exists.put(logo, base64Image);
             }
