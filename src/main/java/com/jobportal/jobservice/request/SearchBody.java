@@ -11,7 +11,7 @@ public class SearchBody {
     private String preference;
     private Experience experienceLevel;
     @NonNull
-    private boolean newSearch;
+    private boolean fresh;
     @NonNull
     private Long pageNumber;
 
@@ -66,12 +66,12 @@ public class SearchBody {
         this.experienceLevel = experienceLevel;
     }
 
-    public boolean isNewSearch() {
-        return newSearch;
+    public boolean isFresh() {
+        return fresh;
     }
 
-    public void setNewSearch(boolean newSearch) {
-        this.newSearch = newSearch;
+    public void setFresh(boolean fresh) {
+        this.fresh = fresh;
     }
 
     @NonNull

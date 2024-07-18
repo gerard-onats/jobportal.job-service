@@ -28,7 +28,8 @@ public class JobMatch {
     @Column(name="date_added")
     private Date dateAdded;
 
-    @OneToMany(mappedBy = "jobMatch")
+    /*Warning - Can cause (n + 1) if invoked during a normal search query */
+    @OneToMany(orphanRemoval = true, mappedBy = "jobMatch")
     private List<Question> questions;
 
     public Long getId() {
@@ -69,5 +70,13 @@ public class JobMatch {
 
     public void setDateAdded(Date dateAdded) {
         this.dateAdded = dateAdded;
+    }
+
+    public List<Question> getQuestions() {
+        return questions;
+    }
+
+    public void setQuestions(List<Question> questions) {
+        this.questions = questions;
     }
 }

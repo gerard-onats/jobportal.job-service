@@ -3,6 +3,7 @@ package com.jobportal.jobservice.DTO;
 import java.io.Serializable;
 
 public class JobMatchDTO implements Serializable {
+    private Long id;
     private String title;
     private String company;
     private String location;
@@ -12,6 +13,14 @@ public class JobMatchDTO implements Serializable {
     private String base64Image;
 
     /*TODO: Add list for (Skills) */
+
+    public Long getId() {
+        return id;
+    }
+
+    public void setId(Long id) {
+        this.id = id;
+    }
 
     public String getTitle() {
         return title;

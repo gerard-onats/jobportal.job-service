@@ -4,6 +4,7 @@ import com.jobportal.jobservice.DTO.JobMatchDTO;
 import com.jobportal.jobservice.constants.Constants;
 import com.jobportal.jobservice.model.Address;
 import com.jobportal.jobservice.model.JobMatch;
+import com.jobportal.jobservice.repository.JobMatchRepository;
 import com.jobportal.jobservice.request.SearchBody;
 import com.jobportal.jobservice.utils.FormatterUtils;
 import jakarta.persistence.EntityManager;
@@ -23,6 +24,9 @@ public class PostService {
     @Autowired
     AmazonS3Service s3Service;
 
+    @Autowired
+    JobMatchRepository jobMatchRepository;
+
     @PersistenceContext
     EntityManager em;
 
@@ -41,8 +45,8 @@ public class PostService {
         Map<String, Object> result = new HashMap<>();
         result.put("results", buildFormattedDTO(query));
 
-        if(searchBody.isNewSearch()) {
-            Assert.isTrue(queries.getSecond().equals(Constants.EMPTY_STRING), "Cannot be!");
+        if(searchBody.isFresh()) {
+            Assert.isTrue(!queries.getSecond().equals(Constants.EMPTY_STRING), "Cannot be!");
             setExtraMetaData(result, queries.getSecond());
         }
 
@@ -57,6 +61,7 @@ public class PostService {
         for(JobMatch match : query) {
             JobMatchDTO matchDTO = new JobMatchDTO();
 
+            matchDTO.setId(match.getId());
             matchDTO.setCompany(match.getCompany().getCompanyName());
             matchDTO.setDescription(match.getJobDescription());
             matchDTO.setTitle(match.getJobTitle());
@@ -88,7 +93,7 @@ public class PostService {
 
         /*TODO convert to StringBuilder for building more complex queries*/
         String first = String.format("SELECT job FROM JobMatch job LEFT JOIN FETCH job.company comp LEFT JOIN FETCH comp.address WHERE fts(%s, '%s')", TABLE_COLUMNS, ftsQuery);
-        String second = searchBody.isNewSearch()
+        String second = searchBody.isFresh()
                 ? String.format("SELECT COUNT(job) FROM JobMatch job LEFT JOIN job.company comp LEFT JOIN comp.address WHERE fts(%s, '%s')", TABLE_COLUMNS, ftsQuery)
                 : Constants.EMPTY_STRING;
 
@@ -112,12 +117,18 @@ public class PostService {
     private void setExtraMetaData(Map map, String queryString) {
         Query q = em.createQuery(queryString);
 
-        Long resultsMatch = (Long) q.getSingleResult();
-        Long pagesNeeded = (resultsMatch + Constants.DEFAULT_RESULTS_PER_PAGE - 1) / Constants.DEFAULT_RESULTS_PER_PAGE;
+        Long matches = (Long) q.getSingleResult();
+        Long pagesNeeded = (matches + Constants.DEFAULT_RESULTS_PER_PAGE - 1) / Constants.DEFAULT_RESULTS_PER_PAGE;
 
-        map.put("resultMatch", resultsMatch);
+        map.put("matches", matches);
         map.put("pagesNeeded", pagesNeeded);
     }
+
+    public String deleteById(Long id) {
+        jobMatchRepository.deleteById(id);
+        return "DELETED JOB_AD WITH ID " + id;
+    }
+
 }
 
 
