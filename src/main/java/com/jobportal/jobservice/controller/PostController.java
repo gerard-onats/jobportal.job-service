@@ -30,8 +30,7 @@ public class PostController {
     private final Logger logger = LoggerFactory.getLogger(PostController.class);
 
     @GetMapping("search/")
-    public ResponseEntity<Map>
-        search(SearchBody searchBody) {
+    public ResponseEntity<Map> search(SearchBody searchBody) {
         return ResponseEntity.ok(postService.search(searchBody));
     }
 
@@ -39,7 +38,6 @@ public class PostController {
     public ResponseEntity<List> questions(@PathVariable("id") Long id) {
         return ResponseEntity.ok(questionService.findQuestionById(id));
     }
-
 
     @DeleteMapping("delete/{id}")
     public ResponseEntity<String> delete(@PathVariable("id") Long id) {

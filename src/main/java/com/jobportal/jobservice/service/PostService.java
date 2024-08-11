@@ -89,7 +89,8 @@ public class PostService {
 
     private Pair<String, String> buildQueries(SearchBody searchBody) {
         final String TABLE_COLUMNS = "job.jobTitle||' '||job.jobDescription||' '||comp.companyName";
-        final String ftsQuery = ftsStringQuery(searchBody.getQuery());
+        final String tokens[] = searchBody.getQuery().split(" ");
+        final String ftsQuery = String.join(" | ", tokens);
 
         /*TODO convert to StringBuilder for building more complex queries*/
         String first = String.format("SELECT job FROM JobMatch job LEFT JOIN FETCH job.company comp LEFT JOIN FETCH comp.address WHERE fts(%s, '%s')", TABLE_COLUMNS, ftsQuery);
@@ -98,20 +99,6 @@ public class PostService {
                 : Constants.EMPTY_STRING;
 
         return Pair.of(first, second);
-    }
-
-    private String ftsStringQuery(String query) {
-        StringBuilder sb = new StringBuilder();
-        String[] tokens = query.split(" ");
-
-        boolean isFirst = true;
-        for(String token : tokens) {
-            if(!isFirst) sb.append(" | ");
-            sb.append(token);
-            isFirst = false;
-        }
-
-        return sb.toString();
     }
 
     private void setExtraMetaData(Map map, String queryString) {
