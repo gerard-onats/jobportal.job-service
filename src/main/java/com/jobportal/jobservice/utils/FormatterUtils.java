@@ -1,6 +1,7 @@
 package com.jobportal.jobservice.utils;
 
 import com.jobportal.jobservice.constants.Constants;
+import com.jobportal.jobservice.constants.TimeConstants;
 import com.jobportal.jobservice.model.Address;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -26,23 +27,16 @@ public class FormatterUtils {
     }
 
     public static String datePostedFormatter(Date date) {
-        long duration = TimeUnit.MILLISECONDS.toMinutes(new Date().getTime() - date.getTime());
-        if(duration < Constants.MINUTES_IN_HOUR) {
-            if(duration <= 1) {
-                if(duration == 0) return "Just now";
-                return String.format("%d minute ago", duration);
-            }
-            return String.format("%d minutes ago", duration);
+        final long duration = TimeUnit.MILLISECONDS.toMinutes(new Date().getTime() - date.getTime());
+
+        for(int i = TimeConstants.periodLength.length - 1; i >= 0; i--) {
+            if(duration < TimeConstants.periodLength[i]) continue;
+            long result = (duration / TimeConstants.periodLength[i]);
+            if(result <= 1) return String.format("%d %s ago", result, TimeConstants.periodName[i]);
+            return String.format("%d %ss ago", result, TimeConstants.periodName[i]);
         }
 
-        for(int i = 1; i < Constants.timeTypes.length; i++) {
-            if(duration >= Constants.timeTypes[i]) continue;
-            Long result = (duration / Constants.timeTypes[i - 1]);
-            if(result <= 1) return String.format("%d %s ago", result, Constants.timeTypesName[i - 1]);
-            return String.format("%d %ss ago", result, Constants.timeTypesName[i - 1]);
-        }
-
-        return Constants.EMPTY_STRING;
+        return "Just now";
     }
 
 }

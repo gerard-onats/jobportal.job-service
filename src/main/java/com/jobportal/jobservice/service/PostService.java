@@ -70,7 +70,7 @@ public class PostService {
             String logo = match.getCompany().getLogo();
             if(exists.containsKey(logo)) matchDTO.setBase64Image(exists.get(logo));
             else {
-                String base64Image = FormatterUtils.base64LogoFormatter(logo, s3Service.getObjectBase64(logo));
+                String base64Image = FormatterUtils.base64LogoFormatter(logo, s3Service.retrieveToBase64(logo));
                 matchDTO.setBase64Image(base64Image);
                 exists.put(logo, base64Image);
             }
