@@ -2,10 +2,8 @@ package com.jobportal.jobservice.service;
 
 import com.amazonaws.services.s3.AmazonS3;
 import com.amazonaws.services.s3.model.AmazonS3Exception;
-import com.amazonaws.services.s3.model.S3Object;
 import com.amazonaws.services.s3.model.S3ObjectInputStream;
 import com.amazonaws.util.IOUtils;
-import com.jobportal.jobservice.constants.Constants;
 import com.jobportal.jobservice.utils.ImageUtils;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,17 +23,17 @@ public class AmazonS3Service {
 
     private final Logger logger = LoggerFactory.getLogger(AmazonS3Service.class);
 
-    public String getObjectBase64(final String fileName) {
+    public String retrieveToBase64(String filename) {
         try {
-            Long start = System.currentTimeMillis();
-            S3Object s3Object = s3Client.getObject(BUCKET_NAME, fileName);
-            S3ObjectInputStream is = s3Object.getObjectContent();
+            final long start = System.currentTimeMillis();
+            final S3ObjectInputStream is = this.s3Client
+                    .getObject(BUCKET_NAME, filename)
+                    .getObjectContent();
 
-            byte[] data = IOUtils.toByteArray(is);
-            String result = ImageUtils.imageToBase64(data);
+            final byte[] data = IOUtils.toByteArray(is);
+            final String result = ImageUtils.imageToBase64(data);
 
-            Long timeTaken = System.currentTimeMillis() - start;
-            logger.info("Successfully encoded {}, took {}ms", fileName, timeTaken);
+            logger.info("Successfully encoded {} in {}ms", filename, System.currentTimeMillis() - start);
             return result;
         }
         catch (IOException IOexception) {
@@ -43,7 +41,7 @@ public class AmazonS3Service {
             throw new RuntimeException(IOexception.getMessage());
         }
         catch (AmazonS3Exception s3Exception) {
-            logger.info("Exception occurred when retrieving object of key:{}", fileName);
+            logger.info("Exception occurred when retrieving object of key:{}", filename);
             logger.warn("Amazon S3 exception occurred with message {}", s3Exception.getMessage());
             throw new RuntimeException(s3Exception.getMessage());
         }
