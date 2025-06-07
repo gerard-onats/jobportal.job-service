@@ -43,5 +43,5 @@ public class Question {
     @JoinColumn(name = "job_id",
             insertable = false,
             updatable = false)
-    private JobMatch jobMatch;
+    private JobPost jobPost;
 }

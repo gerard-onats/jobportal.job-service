@@ -1,6 +1,5 @@
 package com.jobportal.jobservice.fulltext;
 
-import com.jobportal.jobservice.fulltext.FullTextSQLFunction;
 import org.hibernate.boot.model.FunctionContributions;
 import org.hibernate.boot.model.FunctionContributor;
 
